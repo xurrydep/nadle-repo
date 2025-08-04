@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import "./App.css";
 import Leaderboard from "./Leaderboard";
-import { FaTwitter, FaDiscord } from "react-icons/fa";
 
 const WORDS = [
   "mon", "nadog", "nads", "quant", "what", "keone", "john", "karma", "chog",
@@ -202,7 +201,6 @@ export default function App() {
     return `${m}:${s}`;
   }
 
-  // Güncellenmiş ipucu fonksiyonu
   function useHint() {
     if (hintUsed) return;
     hintAudio.current?.play();
@@ -219,32 +217,11 @@ export default function App() {
     setHintUsed(true);
   }
 
-  // Twitter paylaşım metni ve URL
-  const tweetText = `GMONAD I solved today's NADLE word in ${guesses.length} tries! 🔤⏱️ ${formatTime(time)}\nPlay it: https://nadle.vercel.app Thank you for game @xurrydep`;
-  const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
+  // Tweet URL ve metin kaldırıldı (ikonlar kaldırıldığı için)
 
   return (
     <div className="game-container">
-      <div className="social-buttons">
-        <a
-          href="https://x.com/xurrydep"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Twitter"
-          className="social-btn twitter-btn"
-        >
-          <FaTwitter />
-        </a>
-        <div
-          className="discord-icon discord-btn"
-          style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "18px" }}
-        >
-          <FaDiscord style={{ fontSize: "24px" }} />
-          <span className="discord-text" style={{ fontSize: "20px" }}>
-            xurrydep
-          </span>
-        </div>
-      </div>
+      {/* Sosyal medya ikonları kaldırıldı */}
 
       <h1>NADLE</h1>
 
@@ -252,11 +229,12 @@ export default function App() {
         <div className="name-input-container">
           <input
             className="name-input"
-            placeholder="Enter your name"
+            placeholder="X (formerly Twitter) handle"
             value={playerName}
             onChange={(e) => setPlayerName(e.target.value)}
+            aria-label="X (formerly Twitter) handle"
           />
-          <button className="start-button" onClick={() => setNameSubmitted(true)}>
+          <button className="start-button" onClick={() => setNameSubmitted(true)} disabled={!playerName.trim()}>
             Start Game
           </button>
         </div>
@@ -307,16 +285,7 @@ export default function App() {
           {gameOver && (
             <>
               <div className="confetti" />
-              <a
-                href={tweetUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="tweet-share-rectangle"
-                aria-label="Share your score on Twitter"
-              >
-                <FaTwitter style={{ marginRight: "8px" }} />
-                Share your score on Twitter
-              </a>
+              {/* Tweet paylaşım linki kaldırıldı */}
             </>
           )}
 
@@ -327,6 +296,9 @@ export default function App() {
           <audio ref={hintAudio} src="/sounds/hint.wav" preload="auto" />
         </>
       )}
+
+      {/* Alt orta kısımda X/DC: xurrydep kutusu */}
+      <div className="footer-handle-box">X/DC: xurrydep</div>
     </div>
   );
 }

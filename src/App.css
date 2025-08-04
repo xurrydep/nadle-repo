@@ -14,47 +14,7 @@ body {
   position: relative;
 }
 
-/* --- Sosyal medya butonları sol üstte yatay ikonlar --- */
-.social-buttons {
-  position: fixed;
-  top: 10px;
-  left: 10px;
-  display: flex;
-  gap: 10px;
-  z-index: 2000;
-}
-
-.social-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  text-decoration: none;
-  font-size: 20px;
-  color: white;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-  transition: background-color 0.3s ease;
-  user-select: none;
-  padding: 0;
-}
-
-.twitter-btn {
-  background-color: #1DA1F2;
-}
-
-.twitter-btn:hover {
-  background-color: #0d8ddb;
-}
-
-.discord-btn {
-  background-color: #7289da;
-}
-
-.discord-btn:hover {
-  background-color: #5b6eae;
-}
+/* --- Sosyal medya butonları kaldırıldı, stil silindi --- */
 
 /* --- Oyun ızgarası --- */
 .grid {
@@ -188,8 +148,13 @@ body {
   transition: background-color 0.3s ease;
 }
 
-.start-button:hover {
+.start-button:hover:not(:disabled) {
   background-color: #e6b800;
+}
+
+.start-button:disabled {
+  background-color: #bfa800;
+  cursor: not-allowed;
 }
 
 /* --- İpucu butonu --- */
@@ -273,79 +238,4 @@ body {
 
   .cell {
     width: 34px;
-    height: 34px;
-    font-size: 18px;
-  }
-
-  .key-btn {
-    padding: 10px 8px;
-    font-size: 14px;
-  }
-
-  .leaderboard {
-    position: absolute;
-    bottom: 5px;
-    width: 100%;
-    max-width: none;
-    border-radius: 0;
-    left: 0;
-    right: 0;
-  }
-
-  /* Mobilde ipucu butonu genişliği */
-  .hint-button {
-    width: 90%;
-    font-size: 14px;
-    padding: 12px 0;
-  }
-
-  /* --- Mobilde sosyal medya butonlarını sağ üst köşeye taşı --- */
-  .social-buttons {
-    top: 10px;
-    right: 10px;
-    left: auto;
-    flex-direction: row;
-    gap: 12px;
-  }
-
-  /* --- Mobilde Discord butonunu sağ alt köşeye sabitle --- */
-  .discord-btn {
-    position: fixed !important;
-    bottom: 20px;
-    right: 20px;
-    z-index: 2100;
-    border-radius: 50%;
-    padding: 10px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-    background-color: #7289da;
-  }
-
-  /* Discord metnini gizle sadece ikon gözüksün */
-  .discord-btn .discord-text {
-    display: none;
-  }
-}
-
-/* --- Twitter paylaşım butonu sağ alt köşede --- */
-.tweet-share-btn {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background-color: #1DA1F2;
-  color: white;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 22px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-  transition: background-color 0.3s ease;
-  z-index: 2000;
-  cursor: pointer;
-}
-
-.tweet-share-btn:hover {
-  background-color: #0d8ddb;
-}
+    height
