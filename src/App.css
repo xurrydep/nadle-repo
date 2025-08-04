@@ -14,7 +14,7 @@ body {
   position: relative;
 }
 
-/* --- Sosyal medya butonları sol üstte yatay ikonlar --- */
+/* --- Sosyal medya butonları --- */
 .social-buttons {
   position: fixed;
   top: 10px;
@@ -292,14 +292,12 @@ body {
     right: 0;
   }
 
-  /* Mobilde ipucu butonu genişliği */
   .hint-button {
     width: 90%;
     font-size: 14px;
     padding: 12px 0;
   }
 
-  /* --- Mobilde sosyal medya butonlarını sağ üst köşeye taşı --- */
   .social-buttons {
     top: 10px;
     right: 10px;
@@ -308,7 +306,6 @@ body {
     gap: 12px;
   }
 
-  /* --- Mobilde Discord butonunu sağ alt köşeye sabitle --- */
   .discord-btn {
     position: fixed !important;
     bottom: 20px;
@@ -320,13 +317,12 @@ body {
     background-color: #7289da;
   }
 
-  /* Discord metnini gizle sadece ikon gözüksün */
   .discord-btn .discord-text {
     display: none;
   }
 }
 
-/* --- Twitter paylaşım butonu sağ alt köşede --- */
+/* --- Twitter paylaşım butonu --- */
 .tweet-share-btn {
   position: fixed;
   bottom: 20px;
