@@ -225,34 +225,14 @@ export default function App() {
 
   return (
     <div className="game-container">
-      <div className="social-buttons">
-        <a
-          href="https://x.com/xurrydep"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Twitter"
-          className="social-btn twitter-btn"
-        >
-          <FaTwitter />
-        </a>
-        <div
-          className="discord-icon discord-btn"
-          style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "18px" }}
-        >
-          <FaDiscord style={{ fontSize: "24px" }} />
-          <span className="discord-text" style={{ fontSize: "20px" }}>
-            xurrydep
-          </span>
-        </div>
-      </div>
-
+      {/* Sosyal butonlar sayfanın altına ve ortaya taşındı */}
       <h1>NADLE</h1>
 
       {!nameSubmitted ? (
         <div className="name-input-container">
           <input
             className="name-input"
-            placeholder="Enter your name"
+            placeholder="X (formerly Twitter) handle"
             value={playerName}
             onChange={(e) => setPlayerName(e.target.value)}
           />
@@ -327,6 +307,27 @@ export default function App() {
           <audio ref={hintAudio} src="/sounds/hint.wav" preload="auto" />
         </>
       )}
+
+      <div className="social-buttons">
+        <a
+          href="https://x.com/xurrydep"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Twitter"
+          className="social-btn twitter-btn"
+        >
+          <FaTwitter />
+        </a>
+        <div
+          className="discord-icon discord-btn"
+          style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "18px" }}
+        >
+          <FaDiscord style={{ fontSize: "24px" }} />
+          <span className="discord-text" style={{ fontSize: "20px" }}>
+            xurrydep
+          </span>
+        </div>
+      </div>
     </div>
   );
 }
