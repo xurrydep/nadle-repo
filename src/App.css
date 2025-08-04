@@ -14,7 +14,7 @@ body {
   position: relative;
 }
 
-/* --- Sosyal medya butonları --- */
+/* --- Sosyal medya butonları kapsayıcısı --- */
 .social-buttons {
   position: fixed;
   bottom: 10px;
@@ -26,30 +26,7 @@ body {
   align-items: center;
 }
 
-.social-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  text-decoration: none;
-  font-size: 20px;
-  color: white;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-  transition: background-color 0.3s ease;
-  user-select: none;
-  padding: 0;
-}
-
-.twitter-btn {
-  background-color: #1DA1F2;
-}
-
-.twitter-btn:hover {
-  background-color: #0d8ddb;
-}
-
+/* --- Discord butonu (alt orta) --- */
 .discord-btn {
   background-color: #7289da;
   display: flex;
@@ -72,6 +49,31 @@ body {
 .discord-btn .discord-text {
   font-size: 20px;
   line-height: 1;
+}
+
+/* --- X butonu (sağ alt köşe) --- */
+.x-btn {
+  position: fixed;
+  bottom: 12px;
+  right: 12px;
+  width: 44px;
+  height: 44px;
+  background-color: #1DA1F2;
+  border-radius: 50%;
+  color: white;
+  font-size: 26px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  z-index: 2000;
+  user-select: none;
+}
+
+.x-btn:hover {
+  background-color: #0d8ddb;
 }
 
 /* --- Oyun ızgarası --- */
@@ -317,7 +319,6 @@ body {
   }
 
   .social-buttons {
-    position: fixed;
     bottom: 10px;
     left: 50%;
     transform: translateX(-50%);
@@ -332,6 +333,11 @@ body {
   .discord-btn .discord-text {
     display: inline;
     font-size: 16px;
+  }
+
+  .x-btn {
+    bottom: 12px;
+    right: 12px;
   }
 }
 
