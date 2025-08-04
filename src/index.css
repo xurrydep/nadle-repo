@@ -1,0 +1,307 @@
+body {
+  background-color: #1a0033;
+  margin: 0;
+  padding: 0;
+  color: white;
+  font-family: sans-serif;
+}
+
+.game-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem;
+  position: relative;
+}
+
+/* --- Sosyal medya butonları sol üstte yatay ikonlar --- */
+.social-buttons {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  gap: 10px;
+  z-index: 2000;
+}
+
+.social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  text-decoration: none;
+  font-size: 20px;
+  color: white;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  transition: background-color 0.3s ease;
+  user-select: none;
+  padding: 0;
+}
+
+.twitter-btn {
+  background-color: #1DA1F2;
+}
+
+.twitter-btn:hover {
+  background-color: #0d8ddb;
+}
+
+.discord-btn {
+  background-color: #7289da;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px;
+  border-radius: 20px;
+}
+
+.discord-btn:hover {
+  background-color: #5b6eae;
+}
+
+.discord-btn .social-icon {
+  font-size: 24px; /* Discord simgesi biraz daha büyük */
+  color: white;
+}
+
+.discord-text {
+  font-size: 20px; /* Nick yanında daha büyük yazı */
+  color: white;
+  user-select: none;
+}
+
+/* --- Oyun ızgarası --- */
+.grid {
+  margin: 20px 0;
+}
+
+.row {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+.cell {
+  width: 40px;
+  height: 40px;
+  margin: 2px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  font-size: 22px;
+  text-transform: uppercase;
+  background-color: #444;
+  border: 2px solid #666;
+  border-radius: 4px;
+}
+
+.cell.correct {
+  background-color: #6aaa64;
+  color: white;
+}
+
+.cell.present {
+  background-color: #c9b458;
+  color: white;
+}
+
+.cell.absent {
+  background-color: #555;
+  color: white;
+}
+
+/* --- Klavye --- */
+.keyboard {
+  margin-top: 20px;
+}
+
+.key-row {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 6px;
+}
+
+.key-btn {
+  background-color: #333;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  margin: 2px;
+  padding: 12px 10px;
+  font-size: 16px;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.3s ease;
+}
+
+.key-btn:hover {
+  background-color: #555;
+}
+
+.key-btn.correct {
+  background-color: #6aaa64;
+}
+
+.key-btn.present {
+  background-color: #c9b458;
+}
+
+.key-btn.invalid {
+  text-decoration: line-through;
+  color: red;
+  opacity: 0.6;
+}
+
+/* --- Zamanlayıcı ve mesaj alanı --- */
+.timer {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.message {
+  margin-top: 15px;
+  font-size: 18px;
+  font-weight: bold;
+  min-height: 24px;
+  color: #ffcc00;
+  user-select: none;
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
+}
+
+/* --- İsim girişi ve başlatma --- */
+.name-input-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 30px;
+}
+
+.name-input {
+  padding: 10px 15px;
+  font-size: 18px;
+  border-radius: 6px;
+  border: none;
+  margin-bottom: 15px;
+  width: 220px;
+  text-align: center;
+}
+
+.start-button {
+  background-color: #ffcc00;
+  color: #1a0033;
+  padding: 12px 24px;
+  font-size: 18px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.start-button:hover {
+  background-color: #e6b800;
+}
+
+/* --- Mor animasyon efekti --- */
+.win-animation {
+  animation: pulsePurple 1s ease-in-out infinite;
+}
+
+@keyframes pulsePurple {
+  0% {
+    box-shadow: 0 0 0 0 rgba(128, 0, 255, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 20px rgba(128, 0, 255, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(128, 0, 255, 0);
+  }
+}
+
+/* --- Leaderboard --- */
+.leaderboard {
+  margin-top: 30px;
+  text-align: center;
+  width: 100%;
+  max-width: 360px;
+  background-color: rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 15px;
+}
+
+.leaderboard h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.leaderboard ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+  font-size: 16px;
+}
+
+.leaderboard li {
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* --- Mobil uyum --- */
+@media (max-width: 600px) {
+  .grid {
+    transform: scale(0.9);
+  }
+
+  .cell {
+    width: 34px;
+    height: 34px;
+    font-size: 18px;
+  }
+
+  .key-btn {
+    padding: 10px 8px;
+    font-size: 14px;
+  }
+
+  .leaderboard {
+    position: absolute;
+    bottom: 5px;
+    width: 100%;
+    max-width: none;
+    border-radius: 0;
+    left: 0;
+    right: 0;
+  }
+}
+
+/* --- Twitter paylaşım dikdörtgen butonu --- */
+.tweet-share-rectangle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #1DA1F2;
+  color: white;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 16px;
+  text-decoration: none;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  transition: background-color 0.3s ease;
+  user-select: none;
+  margin-top: 10px;
+}
+
+.tweet-share-rectangle:hover {
+  background-color: #0d8ddb;
+}
