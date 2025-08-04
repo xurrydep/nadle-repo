@@ -201,6 +201,7 @@ export default function App() {
     return `${m}:${s}`;
   }
 
+  // Güncellenmiş ipucu fonksiyonu
   function useHint() {
     if (hintUsed) return;
     hintAudio.current?.play();
@@ -217,8 +218,6 @@ export default function App() {
     setHintUsed(true);
   }
 
-  // Tweet URL ve metin kaldırıldı (ikonlar kaldırıldığı için)
-
   return (
     <div className="game-container">
       {/* Sosyal medya ikonları kaldırıldı */}
@@ -234,7 +233,11 @@ export default function App() {
             onChange={(e) => setPlayerName(e.target.value)}
             aria-label="X (formerly Twitter) handle"
           />
-          <button className="start-button" onClick={() => setNameSubmitted(true)} disabled={!playerName.trim()}>
+          <button
+            className="start-button"
+            onClick={() => setNameSubmitted(true)}
+            disabled={!playerName.trim()}
+          >
             Start Game
           </button>
         </div>
@@ -285,20 +288,21 @@ export default function App() {
           {gameOver && (
             <>
               <div className="confetti" />
-              {/* Tweet paylaşım linki kaldırıldı */}
+              {/* Tweet paylaşımı kaldırıldı çünkü Twitter ikonları da kaldırıldı */}
             </>
           )}
 
           <Leaderboard scores={leaderboard} />
-          <audio ref={correctAudio} src="/sounds/congrats.wav" preload="auto" />
-          <audio ref={presentAudio} src="/sounds/mf.wav" preload="auto" />
-          <audio ref={absentAudio} src="/sounds/fart.wav" preload="auto" />
-          <audio ref={hintAudio} src="/sounds/hint.wav" preload="auto" />
         </>
       )}
 
-      {/* Alt orta kısımda X/DC: xurrydep kutusu */}
+      {/* Sayfanın en alt ortasında kutu içinde X/DC: xurrydep */}
       <div className="footer-handle-box">X/DC: xurrydep</div>
+
+      <audio ref={correctAudio} src="/sounds/congrats.wav" preload="auto" />
+      <audio ref={presentAudio} src="/sounds/mf.wav" preload="auto" />
+      <audio ref={absentAudio} src="/sounds/fart.wav" preload="auto" />
+      <audio ref={hintAudio} src="/sounds/hint.wav" preload="auto" />
     </div>
   );
 }
