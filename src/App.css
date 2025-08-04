@@ -14,12 +14,11 @@ body {
   position: relative;
 }
 
-/* --- Sosyal medya butonları alt ortada yatay ikonlar --- */
+/* --- Sosyal medya butonları sol üstte yatay ikonlar --- */
 .social-buttons {
   position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
+  top: 10px;
+  left: 10px;
   display: flex;
   gap: 10px;
   z-index: 2000;
@@ -300,9 +299,13 @@ body {
     padding: 12px 0;
   }
 
-  /* --- Mobilde sosyal medya butonlarını alt orta konumda bırak (transform ile) --- */
+  /* --- Mobilde sosyal medya butonlarını sağ üst köşeye taşı --- */
   .social-buttons {
-    /* aynı kalıyor çünkü zaten alt ortada */
+    top: 10px;
+    right: 10px;
+    left: auto;
+    flex-direction: row;
+    gap: 12px;
   }
 
   /* --- Mobilde Discord butonunu sağ alt köşeye sabitle --- */
@@ -321,30 +324,6 @@ body {
   .discord-btn .discord-text {
     display: none;
   }
-}
-
-/* --- Sağ alt köşedeki X butonu görünür ve sabit --- */
-.x-btn {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background-color: #6a0dad;
-  color: white;
-  font-weight: bold;
-  font-size: 18px;
-  padding: 10px 14px;
-  border-radius: 50%;
-  text-align: center;
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-  user-select: none;
-  z-index: 2100;
-  text-decoration: none;
-  transition: background-color 0.3s ease;
-}
-
-.x-btn:hover {
-  background-color: #8a23e0;
 }
 
 /* --- Twitter paylaşım butonu sağ alt köşede --- */

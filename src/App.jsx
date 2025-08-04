@@ -123,8 +123,6 @@ export default function App() {
         return newSet;
       });
       setMessage("⚠️ Invalid word!");
-      absentAudio.current?.play();
-      return;
     } else {
       setMessage("");
     }
@@ -161,9 +159,8 @@ export default function App() {
     const newScore = { name: playerName || "Anon", time, attempts: guesses.length + 1 };
     currentScores.push(newScore);
     currentScores.sort((a, b) => a.time - b.time || a.attempts - b.attempts);
-    const topScores = currentScores.slice(0, 10);
-    saveLeaderboard(topScores);
-    setLeaderboard(topScores);
+    saveLeaderboard(currentScores.slice(0, 10));
+    setLeaderboard(currentScores.slice(0, 10));
   }
 
   const keyboard = [
@@ -186,15 +183,13 @@ export default function App() {
   function getKeyStatus(key) {
     const lowerKey = key.toLowerCase();
     for (const statuses of letterStatuses) {
-      const idx = letterStatuses.indexOf(statuses);
       for (let i = 0; i < statuses.length; i++) {
-        if (statuses[i] === "correct" && guesses[idx][i] === lowerKey) return "correct";
+        if (statuses[i] === "correct" && guesses[letterStatuses.indexOf(statuses)][i] === lowerKey) return "correct";
       }
     }
     for (const statuses of letterStatuses) {
-      const idx = letterStatuses.indexOf(statuses);
       for (let i = 0; i < statuses.length; i++) {
-        if (statuses[i] === "present" && guesses[idx][i] === lowerKey) return "present";
+        if (statuses[i] === "present" && guesses[letterStatuses.indexOf(statuses)][i] === lowerKey) return "present";
       }
     }
     if (invalidLetters.has(lowerKey)) return "invalid";
@@ -207,6 +202,7 @@ export default function App() {
     return `${m}:${s}`;
   }
 
+  // Güncellenmiş ipucu fonksiyonu
   function useHint() {
     if (hintUsed) return;
     hintAudio.current?.play();
@@ -223,18 +219,40 @@ export default function App() {
     setHintUsed(true);
   }
 
+  // Twitter paylaşım metni ve URL
   const tweetText = `GMONAD I solved today's NADLE word in ${guesses.length} tries! 🔤⏱️ ${formatTime(time)}\nPlay it: https://nadle.vercel.app Thank you for game @xurrydep`;
   const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
 
   return (
     <div className="game-container">
+      <div className="social-buttons">
+        <a
+          href="https://x.com/xurrydep"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Twitter"
+          className="social-btn twitter-btn"
+        >
+          <FaTwitter />
+        </a>
+        <div
+          className="discord-icon discord-btn"
+          style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "18px" }}
+        >
+          <FaDiscord style={{ fontSize: "24px" }} />
+          <span className="discord-text" style={{ fontSize: "20px" }}>
+            xurrydep
+          </span>
+        </div>
+      </div>
+
       <h1>NADLE</h1>
 
       {!nameSubmitted ? (
         <div className="name-input-container">
           <input
             className="name-input"
-            placeholder="X (formerly Twitter) handle"
+            placeholder="Enter your name"
             value={playerName}
             onChange={(e) => setPlayerName(e.target.value)}
           />
@@ -309,34 +327,6 @@ export default function App() {
           <audio ref={hintAudio} src="/sounds/hint.wav" preload="auto" />
         </>
       )}
-
-      {/* Sosyal medya butonları alt ortada */}
-      <div className="social-buttons" aria-label="Social media links">
-        <a
-          href="https://x.com/xurrydep"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="X (formerly Twitter)"
-          className="social-btn twitter-btn"
-        >
-          <FaTwitter />
-        </a>
-        <div className="discord-btn" aria-label="Discord username">
-          <FaDiscord />
-          <span className="discord-text">xurrydep</span>
-        </div>
-      </div>
-
-      {/* Sağ alt köşede X butonu */}
-      <a
-        href="https://x.com/xurrydep"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="x-btn"
-        aria-label="X profile link"
-      >
-        X
-      </a>
     </div>
   );
 }
