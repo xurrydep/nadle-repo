@@ -14,26 +14,47 @@ body {
   position: relative;
 }
 
-/* --- Sosyal medya metin kutusu (alt ortada) --- */
-.social-text-box {
+/* --- Sosyal medya butonları alt ortada yatay ikonlar --- */
+.social-buttons {
   position: fixed;
-  bottom: 10px;
+  bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  background-color: rgba(128, 0, 255, 0.8); /* Morumsu yarı şeffaf */
-  color: white;
-  padding: 8px 16px;
-  border-radius: 12px;
-  font-weight: bold;
-  font-size: 16px;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-  user-select: none;
+  display: flex;
+  gap: 10px;
   z-index: 2000;
-  text-align: center;
-  width: fit-content;
-  max-width: 90vw;
-  cursor: default;
+}
+
+.social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  text-decoration: none;
+  font-size: 20px;
+  color: white;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  transition: background-color 0.3s ease;
+  user-select: none;
+  padding: 0;
+}
+
+.twitter-btn {
+  background-color: #1DA1F2;
+}
+
+.twitter-btn:hover {
+  background-color: #0d8ddb;
+}
+
+.discord-btn {
+  background-color: #7289da;
+}
+
+.discord-btn:hover {
+  background-color: #5b6eae;
 }
 
 /* --- Oyun ızgarası --- */
@@ -272,19 +293,61 @@ body {
     right: 0;
   }
 
+  /* Mobilde ipucu butonu genişliği */
   .hint-button {
     width: 90%;
     font-size: 14px;
     padding: 12px 0;
   }
 
-  .social-text-box {
-    font-size: 14px;
-    padding: 6px 12px;
+  /* --- Mobilde sosyal medya butonlarını alt orta konumda bırak (transform ile) --- */
+  .social-buttons {
+    /* aynı kalıyor çünkü zaten alt ortada */
+  }
+
+  /* --- Mobilde Discord butonunu sağ alt köşeye sabitle --- */
+  .discord-btn {
+    position: fixed !important;
+    bottom: 20px;
+    right: 20px;
+    z-index: 2100;
+    border-radius: 50%;
+    padding: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    background-color: #7289da;
+  }
+
+  /* Discord metnini gizle sadece ikon gözüksün */
+  .discord-btn .discord-text {
+    display: none;
   }
 }
 
-/* --- Twitter paylaşım butonu (oyunda) --- */
+/* --- Sağ alt köşedeki X butonu görünür ve sabit --- */
+.x-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #6a0dad;
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  padding: 10px 14px;
+  border-radius: 50%;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  user-select: none;
+  z-index: 2100;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.x-btn:hover {
+  background-color: #8a23e0;
+}
+
+/* --- Twitter paylaşım butonu sağ alt köşede --- */
 .tweet-share-btn {
   position: fixed;
   bottom: 20px;
