@@ -14,66 +14,26 @@ body {
   position: relative;
 }
 
-/* --- Sosyal medya butonları kapsayıcısı --- */
-.social-buttons {
+/* --- Sosyal medya metin kutusu (alt ortada) --- */
+.social-text-box {
   position: fixed;
   bottom: 10px;
   left: 50%;
   transform: translateX(-50%);
-  display: flex;
-  gap: 15px;
-  z-index: 2000;
-  align-items: center;
-}
-
-/* --- Discord butonu (alt orta) --- */
-.discord-btn {
-  background-color: #7289da;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 18px;
+  background-color: rgba(128, 0, 255, 0.8); /* Morumsu yarı şeffaf */
   color: white;
-  cursor: default;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-  user-select: text;
-  transition: background-color 0.3s ease;
-}
-
-.discord-btn:hover {
-  background-color: #5b6eae;
-}
-
-.discord-btn .discord-text {
-  font-size: 20px;
-  line-height: 1;
-}
-
-/* --- X butonu (sağ alt köşe) --- */
-.x-btn {
-  position: fixed;
-  bottom: 12px;
-  right: 12px;
-  width: 44px;
-  height: 44px;
-  background-color: #1DA1F2;
-  border-radius: 50%;
-  color: white;
-  font-size: 26px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  z-index: 2000;
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-weight: bold;
+  font-size: 16px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
   user-select: none;
-}
-
-.x-btn:hover {
-  background-color: #0d8ddb;
+  z-index: 2000;
+  text-align: center;
+  width: fit-content;
+  max-width: 90vw;
+  cursor: default;
 }
 
 /* --- Oyun ızgarası --- */
@@ -318,30 +278,13 @@ body {
     padding: 12px 0;
   }
 
-  .social-buttons {
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    gap: 12px;
-  }
-
-  .discord-btn {
-    border-radius: 20px;
+  .social-text-box {
+    font-size: 14px;
     padding: 6px 12px;
-  }
-
-  .discord-btn .discord-text {
-    display: inline;
-    font-size: 16px;
-  }
-
-  .x-btn {
-    bottom: 12px;
-    right: 12px;
   }
 }
 
-/* --- Twitter paylaşım butonu --- */
+/* --- Twitter paylaşım butonu (oyunda) --- */
 .tweet-share-btn {
   position: fixed;
   bottom: 20px;

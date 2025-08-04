@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import "./App.css";
 import Leaderboard from "./Leaderboard";
-import { FaTwitter, FaDiscord } from "react-icons/fa";
 
 const WORDS = [
   "mon", "nadog", "nads", "quant", "what", "keone", "john", "karma", "chog",
@@ -296,7 +295,7 @@ export default function App() {
                 className="tweet-share-rectangle"
                 aria-label="Share your score on Twitter"
               >
-                <FaTwitter style={{ marginRight: "8px" }} />
+                {/* Twitter ikonu kaldırılamazsa bu kısmı silebilirsin */}
                 Share your score on Twitter
               </a>
             </>
@@ -310,33 +309,10 @@ export default function App() {
         </>
       )}
 
-      {/* Sosyal medya butonları alt ortada */}
-      <div className="social-buttons" aria-label="Social media links">
-        <a
-          href="https://x.com/xurrydep"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="X (formerly Twitter)"
-          className="social-btn twitter-btn"
-        >
-          <FaTwitter />
-        </a>
-        <div className="discord-btn" aria-label="Discord username">
-          <FaDiscord />
-          <span className="discord-text">xurrydep</span>
-        </div>
+      {/* Alt orta konumdaki metin kutusu */}
+      <div className="social-text-box" aria-label="Social media contact">
+        X / DC: xurrydep
       </div>
-
-      {/* Sağ alt köşede X butonu */}
-      <a
-        href="https://x.com/xurrydep"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="x-btn"
-        aria-label="X profile link"
-      >
-        X
-      </a>
     </div>
   );
 }
