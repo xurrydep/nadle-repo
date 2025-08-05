@@ -75,7 +75,7 @@ export default function App() {
   useEffect(() => {
     async function fetchLeaderboard() {
       let { data, error } = await supabase
-        .from('scores')
+        .from('leaderboard')
         .select('*')
         .order('time', { ascending: true })
         .limit(10);
@@ -160,13 +160,13 @@ export default function App() {
       attempts: guesses.length + 1,
     };
 
-    const { data, error } = await supabase.from('scores').insert([newScore]);
+    const { data, error } = await supabase.from('leaderboard').insert([newScore]);
 
     if (error) {
       console.error("Error saving score:", error);
     } else {
       const { data: updatedScores, error: fetchError } = await supabase
-        .from('scores')
+        .from('leaderboard')
         .select('*')
         .order('time', { ascending: true })
         .limit(10);
