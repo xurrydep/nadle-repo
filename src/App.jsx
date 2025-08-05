@@ -84,19 +84,20 @@ export default function App() {
   }, []);
 
   async function fetchLeaderboard() {
-    const { data, error } = await supabase
-      .from("leaderboard")
-      .select("*")
-      .order("time", { ascending: true })
-      .limit(10);
+  const { data, error } = await supabase
+    .from("leaderboard")
+    .select("*")
+    .order("time", { ascending: true })
+    .limit(10);
 
-    if (error) {
-      console.error("Error fetching leaderboard:", error);
-      setLeaderboard([]);
-    } else {
-      setLeaderboard(data);
-    }
+  if (error) {
+    console.error("Error fetching leaderboard:", error);
+    setLeaderboard([]);
+  } else {
+    console.log("Fetched leaderboard data:", data);  // <-- Buraya ekle
+    setLeaderboard(data);
   }
+}
 
   async function saveScore(name, time, attempts) {
     const { error } = await supabase.from("leaderboard").insert([{ name, time, attempts }]);
