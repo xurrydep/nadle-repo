@@ -18,7 +18,11 @@ function getUserSeededWord() {
   const today = new Date().toISOString().slice(0, 10);
   const uid = localStorage.getItem("uid") || Math.floor(Math.random() * 100000).toString();
   localStorage.setItem("uid", uid);
-  const hash = parseInt(today.split("-").join("") + uid) % WORDS.length;
+  const seedStr = today.replace(/-/g, '') + uid; // örn: "2025080512345"
+  let hash = 0;
+  for (let i = 0; i < seedStr.length; i++) {
+    hash = (hash * 31 + seedStr.charCodeAt(i)) % WORDS.length;
+  }
   return WORDS[hash].toLowerCase();
 }
 
@@ -64,13 +68,13 @@ export default function App() {
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [currentGuess, gameOver, nameSubmitted]);
+  }, [currentGuess, gameOver, nameSubmitted, answer.length]);
 
   useEffect(() => {
     if (currentGuess.length === answer.length && !gameOver && nameSubmitted) {
       submitGuess(currentGuess.toLowerCase());
     }
-  }, [currentGuess, gameOver, nameSubmitted]);
+  }, [currentGuess, gameOver, nameSubmitted, answer.length]);
 
   useEffect(() => {
     async function fetchLeaderboard() {
@@ -299,11 +303,8 @@ export default function App() {
 
           <p className="message">{message}</p>
 
-          {gameOver && (
-            <div className="confetti" />
-          )}
+          {gameOver && <div className="confetti" />}
 
-          {/* Leaderboard component prop name must be "leaderboard" */}
           <Leaderboard leaderboard={leaderboard} />
         </>
       )}
