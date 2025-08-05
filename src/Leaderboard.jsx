@@ -8,13 +8,13 @@ export default function Leaderboard({ scores, show = true }) {
 
   return (
     <div className="leaderboard-container">
-      <h2 className="leaderboard-title">Twitter Leaderboard</h2>
+      <h2 className="leaderboard-title">Leaderboard</h2>
       <ol className="leaderboard-list">
         {scores.slice(0, 10).map(({ name, time, attempts }, idx) => (
           <li key={idx}>
             <span className="rank">{idx + 1}.</span>{" "}
             <span className="name">{name}</span>{" "}
-            <span className="details">— {formatTime(time)} — {attempts}. try</span>
+            <span className="details">— {formatTime(time)} — {attempts} tries</span>
           </li>
         ))}
       </ol>

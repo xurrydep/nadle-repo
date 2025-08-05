@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import "./App.css";
 import Leaderboard from "./Leaderboard";
+import { supabase } from "./supabaseClient";
 
 const WORDS = [
   "mon", "nadog", "nads", "quant", "what", "keone", "john", "karma", "chog",
@@ -22,20 +23,6 @@ function getUserSeededWord() {
 }
 
 const MAX_ATTEMPTS = 6;
-const LEADERBOARD_STORAGE_KEY = "nadle_leaderboard";
-
-function loadLeaderboard() {
-  try {
-    const data = localStorage.getItem(LEADERBOARD_STORAGE_KEY);
-    return data ? JSON.parse(data) : [];
-  } catch {
-    return [];
-  }
-}
-
-function saveLeaderboard(scores) {
-  localStorage.setItem(LEADERBOARD_STORAGE_KEY, JSON.stringify(scores));
-}
 
 export default function App() {
   const [answer, setAnswer] = useState(getUserSeededWord());
@@ -86,10 +73,23 @@ export default function App() {
   }, [currentGuess, gameOver, nameSubmitted]);
 
   useEffect(() => {
-    setLeaderboard(loadLeaderboard());
+    async function fetchLeaderboard() {
+      let { data, error } = await supabase
+        .from('scores')
+        .select('*')
+        .order('time', { ascending: true })
+        .limit(10);
+
+      if (error) {
+        console.error("Failed to fetch leaderboard:", error);
+      } else {
+        setLeaderboard(data);
+      }
+    }
+    fetchLeaderboard();
   }, []);
 
-  function submitGuess(guess) {
+  async function submitGuess(guess) {
     if (guess.length !== answer.length) return;
 
     const isValidWord = WORDS.includes(guess);
@@ -135,7 +135,7 @@ export default function App() {
       setMessage("🎉 Congratulations, you are nads.");
       setGameOver(true);
       document.body.classList.add("celebrate");
-      saveScore();
+      await saveScore();
     } else if (statuses.includes("present")) {
       presentAudio.current?.play();
     } else {
@@ -149,17 +149,34 @@ export default function App() {
     if (guess !== answer && guesses.length + 1 >= MAX_ATTEMPTS) {
       setGameOver(true);
       setMessage("Game Over! You are not nads.");
-      saveScore();
+      await saveScore();
     }
   }
 
-  function saveScore() {
-    const currentScores = loadLeaderboard();
-    const newScore = { name: playerName || "Anon", time, attempts: guesses.length + 1 };
-    currentScores.push(newScore);
-    currentScores.sort((a, b) => a.time - b.time || a.attempts - b.attempts);
-    saveLeaderboard(currentScores.slice(0, 10));
-    setLeaderboard(currentScores.slice(0, 10));
+  async function saveScore() {
+    const newScore = {
+      name: playerName || "Anon",
+      time,
+      attempts: guesses.length + 1,
+    };
+
+    const { data, error } = await supabase.from('scores').insert([newScore]);
+
+    if (error) {
+      console.error("Error saving score:", error);
+    } else {
+      const { data: updatedScores, error: fetchError } = await supabase
+        .from('scores')
+        .select('*')
+        .order('time', { ascending: true })
+        .limit(10);
+
+      if (fetchError) {
+        console.error("Failed to fetch updated leaderboard:", fetchError);
+      } else {
+        setLeaderboard(updatedScores);
+      }
+    }
   }
 
   const keyboard = [
@@ -201,7 +218,6 @@ export default function App() {
     return `${m}:${s}`;
   }
 
-  // Güncellenmiş ipucu fonksiyonu
   function useHint() {
     if (hintUsed) return;
     hintAudio.current?.play();
@@ -220,8 +236,6 @@ export default function App() {
 
   return (
     <div className="game-container">
-      {/* Sosyal medya ikonları kaldırıldı */}
-
       <h1>NADLE</h1>
 
       {!nameSubmitted ? (
@@ -286,17 +300,13 @@ export default function App() {
           <p className="message">{message}</p>
 
           {gameOver && (
-            <>
-              <div className="confetti" />
-              {/* Tweet paylaşımı kaldırıldı çünkü Twitter ikonları da kaldırıldı */}
-            </>
+            <div className="confetti" />
           )}
 
           <Leaderboard scores={leaderboard} />
         </>
       )}
 
-      {/* Sayfanın en alt ortasında kutu içinde X/DC: xurrydep */}
       <div className="footer-handle-box">X/DC: xurrydep</div>
 
       <audio ref={correctAudio} src="/sounds/congrats.wav" preload="auto" />
