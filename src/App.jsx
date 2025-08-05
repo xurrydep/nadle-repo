@@ -22,6 +22,19 @@ function getUserSeededWord() {
 
 const MAX_ATTEMPTS = 6;
 
+function loadLeaderboard() {
+  try {
+    const data = localStorage.getItem("nadle_leaderboard");
+    return data ? JSON.parse(data) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveLeaderboard(scores) {
+  localStorage.setItem("nadle_leaderboard", JSON.stringify(scores));
+}
+
 export default function App() {
   const [answer, setAnswer] = useState(getUserSeededWord());
   const [guesses, setGuesses] = useState([]);
@@ -31,6 +44,7 @@ export default function App() {
   const [time, setTime] = useState(0);
   const [invalidLetters, setInvalidLetters] = useState(new Set());
   const [letterStatuses, setLetterStatuses] = useState([]);
+  const [leaderboard, setLeaderboard] = useState([]);
   const [playerName, setPlayerName] = useState("");
   const [nameSubmitted, setNameSubmitted] = useState(false);
   const [hintUsed, setHintUsed] = useState(false);
@@ -57,6 +71,10 @@ export default function App() {
         if (currentGuess.length < answer.length) {
           setCurrentGuess((prev) => prev + key.toLowerCase());
         }
+      } else if (key === "Enter") {
+        if (currentGuess.length === answer.length) {
+          submitGuess(currentGuess.toLowerCase());
+        }
       }
     };
     window.addEventListener("keydown", handleKeyDown);
@@ -64,10 +82,8 @@ export default function App() {
   }, [currentGuess, gameOver, nameSubmitted]);
 
   useEffect(() => {
-    if (currentGuess.length === answer.length && !gameOver && nameSubmitted) {
-      submitGuess(currentGuess.toLowerCase());
-    }
-  }, [currentGuess, gameOver, nameSubmitted]);
+    setLeaderboard(loadLeaderboard());
+  }, []);
 
   function submitGuess(guess) {
     if (guess.length !== answer.length) return;
@@ -78,6 +94,7 @@ export default function App() {
     const guessLetters = guess.split("");
     const answerLetterUsed = Array(answer.length).fill(false);
 
+    // Doğru pozisyon ve harfleri işaretle
     for (let i = 0; i < answer.length; i++) {
       if (guessLetters[i] === answerLetters[i]) {
         statuses[i] = "correct";
@@ -85,9 +102,12 @@ export default function App() {
       }
     }
 
+    // Doğru harf yanlış pozisyonu işaretle
     for (let i = 0; i < answer.length; i++) {
       if (statuses[i] === "correct") continue;
-      const idx = answerLetters.findIndex((l, j) => l === guessLetters[i] && !answerLetterUsed[j]);
+      const idx = answerLetters.findIndex(
+        (l, j) => l === guessLetters[i] && !answerLetterUsed[j]
+      );
       if (idx !== -1) {
         statuses[i] = "present";
         answerLetterUsed[idx] = true;
@@ -102,7 +122,17 @@ export default function App() {
         return newSet;
       });
       setMessage("⚠️ Invalid word!");
-      absentAudio.current?.play();
+
+      // Alt satıra geç
+      setGuesses((prev) => [...prev, guess]);
+      setLetterStatuses((prev) => [...prev, statuses]);
+      setCurrentGuess("");
+
+      if (guesses.length + 1 >= MAX_ATTEMPTS) {
+        setGameOver(true);
+        setMessage("Game Over! You are not nads.");
+        saveScore();
+      }
       return;
     } else {
       setMessage("");
@@ -117,6 +147,7 @@ export default function App() {
       setMessage("🎉 Congratulations, you are nads.");
       setGameOver(true);
       document.body.classList.add("celebrate");
+      saveScore();
     } else if (statuses.includes("present")) {
       presentAudio.current?.play();
     } else {
@@ -130,7 +161,17 @@ export default function App() {
     if (guess !== answer && guesses.length + 1 >= MAX_ATTEMPTS) {
       setGameOver(true);
       setMessage("Game Over! You are not nads.");
+      saveScore();
     }
+  }
+
+  function saveScore() {
+    const currentScores = loadLeaderboard();
+    const newScore = { name: playerName || "Anon", time, attempts: guesses.length + 1 };
+    currentScores.push(newScore);
+    currentScores.sort((a, b) => a.time - b.time || a.attempts - b.attempts);
+    saveLeaderboard(currentScores.slice(0, 10));
+    setLeaderboard(currentScores.slice(0, 10));
   }
 
   const keyboard = [
@@ -190,7 +231,6 @@ export default function App() {
 
   return (
     <div className="game-container">
-
       <h1>NADLE</h1>
 
       {!nameSubmitted ? (
@@ -244,7 +284,11 @@ export default function App() {
             {keyboard.map((row, i) => (
               <div key={i} className="key-row">
                 {row.map((k) => (
-                  <button key={k} onClick={() => handleKeyClick(k)} className={`key-btn ${getKeyStatus(k)}`}>
+                  <button
+                    key={k}
+                    onClick={() => handleKeyClick(k)}
+                    className={`key-btn ${getKeyStatus(k)}`}
+                  >
                     {k}
                   </button>
                 ))}
@@ -254,39 +298,10 @@ export default function App() {
 
           <p className="message">{message}</p>
 
-          {gameOver && <div className="confetti" />}
+          {/* Sayfanın en alt ortasında kutu içinde X/DC: xurrydep */}
+          <div className="footer-handle-box">X/DC: xurrydep</div>
         </>
       )}
-
-      {/* Oyun kuralları kutusu (sol altta) */}
-      <div className="rules-box">
-        <h4>Game Rules</h4>
-        <p>
-          Purpose:<br/>
-          Test how well you know Monad and its ecosystem by guessing the daily word.<br/><br/>
-          How to play:<br/>
-          Enter your Twitter username to start. Guess the daily word by filling letters into the boxes. You have 6 lives; a wrong guess moves you to the next row.<br/><br/>
-          Hint:<br/>
-          Press the hint button to reveal one letter in the word. Usable once per game.<br/><br/>
-          Key points:<br/>
-          Correct letter & position: green<br/>
-          Correct letter, wrong position: yellow<br/>
-          Wrong letter: no color
-        </p>
-      </div>
-
-      {/* Güncellemeler kutusu (sağ altta) */}
-      <div className="update-box">
-        <h4>UPDATE v0.01</h4>
-        <ul>
-          <li>New words have been added.</li>
-          <li>Game rules have been added to the homepage.</li>
-          <li>A database system will be introduced for the leaderboard.</li>
-        </ul>
-      </div>
-
-      {/* Sayfanın en alt ortasında kutu içinde X/DC: xurrydep */}
-      <div className="footer-handle-box">X/DC: xurrydep</div>
 
       <audio ref={correctAudio} src="/sounds/congrats.wav" preload="auto" />
       <audio ref={presentAudio} src="/sounds/mf.wav" preload="auto" />
