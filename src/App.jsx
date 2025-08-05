@@ -303,7 +303,8 @@ export default function App() {
             <div className="confetti" />
           )}
 
-          <Leaderboard scores={leaderboard} />
+          {/* Leaderboard component prop name must be "leaderboard" */}
+          <Leaderboard leaderboard={leaderboard} />
         </>
       )}
 

@@ -2,7 +2,7 @@ import React from "react";
 import "./Leaderboard.css";
 
 export default function Leaderboard({ leaderboard, show = true }) {
-  if (!show || !leaderboard.length) {
+  if (!show || !leaderboard || leaderboard.length === 0) {
     return null;
   }
 
