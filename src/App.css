@@ -14,8 +14,6 @@ body {
   position: relative;
 }
 
-/* --- Sosyal medya butonları kaldırıldı, bu alan boş bırakıldı --- */
-
 /* --- Oyun ızgarası --- */
 .grid {
   margin: 20px 0;
@@ -234,6 +232,44 @@ body {
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+/* --- Oyun kuralları kutusu (sol alt köşede) --- */
+.rules-box {
+  position: fixed;
+  bottom: 60px;
+  left: 10px;
+  width: 250px;
+  max-width: 90vw;
+  background-color: rgba(106, 13, 173, 0.85);
+  border-radius: 12px 12px 0 0;
+  padding: 15px;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 -2px 10px rgba(106, 13, 173, 0.7);
+  color: white;
+  z-index: 2100;
+  user-select: none;
+  text-align: left;
+}
+
+/* --- Güncellemeler kutusu (sağ alt köşede) --- */
+.update-box {
+  position: fixed;
+  bottom: 60px;
+  right: 10px;
+  width: 250px;
+  max-width: 90vw;
+  background-color: rgba(106, 13, 173, 0.85);
+  border-radius: 12px 12px 0 0;
+  padding: 15px;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 -2px 10px rgba(106, 13, 173, 0.7);
+  color: white;
+  z-index: 2100;
+  user-select: none;
+  text-align: left;
+}
+
 /* --- Sayfanın en altında ortada X/DC: xurrydep kutusu --- */
 .footer-handle-box {
   position: fixed;
@@ -249,6 +285,7 @@ body {
   z-index: 2200;
   user-select: none;
   box-shadow: 0 -2px 10px rgba(106, 13, 173, 0.7);
+  text-align: center;
 }
 
 /* --- Mobil uyum --- */
@@ -278,5 +315,23 @@ body {
     width: 90%;
     font-size: 14px;
     padding: 12px 0;
+  }
+
+  /* Mobilde kurallar, güncellemeler ve footer en alta alt alta ortalanır */
+  .rules-box,
+  .update-box,
+  .footer-handle-box {
+    position: static !important;
+    width: 90% !important;
+    max-width: none !important;
+    margin: 10px auto !important;
+    border-radius: 12px !important;
+    box-shadow: 0 0 10px rgba(106, 13, 173, 0.7) !important;
+    text-align: center !important;
+  }
+
+  .footer-handle-box {
+    font-size: 16px !important;
+    padding: 8px 12px !important;
   }
 }

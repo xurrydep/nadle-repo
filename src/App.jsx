@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
 import "./App.css";
-import Leaderboard from "./Leaderboard";
 
 const WORDS = [
   "mon", "nadog", "nads", "quant", "what", "keone", "john", "karma", "chog",
@@ -22,20 +21,6 @@ function getUserSeededWord() {
 }
 
 const MAX_ATTEMPTS = 6;
-const LEADERBOARD_STORAGE_KEY = "nadle_leaderboard";
-
-function loadLeaderboard() {
-  try {
-    const data = localStorage.getItem(LEADERBOARD_STORAGE_KEY);
-    return data ? JSON.parse(data) : [];
-  } catch {
-    return [];
-  }
-}
-
-function saveLeaderboard(scores) {
-  localStorage.setItem(LEADERBOARD_STORAGE_KEY, JSON.stringify(scores));
-}
 
 export default function App() {
   const [answer, setAnswer] = useState(getUserSeededWord());
@@ -46,7 +31,6 @@ export default function App() {
   const [time, setTime] = useState(0);
   const [invalidLetters, setInvalidLetters] = useState(new Set());
   const [letterStatuses, setLetterStatuses] = useState([]);
-  const [leaderboard, setLeaderboard] = useState([]);
   const [playerName, setPlayerName] = useState("");
   const [nameSubmitted, setNameSubmitted] = useState(false);
   const [hintUsed, setHintUsed] = useState(false);
@@ -85,10 +69,6 @@ export default function App() {
     }
   }, [currentGuess, gameOver, nameSubmitted]);
 
-  useEffect(() => {
-    setLeaderboard(loadLeaderboard());
-  }, []);
-
   function submitGuess(guess) {
     if (guess.length !== answer.length) return;
 
@@ -122,6 +102,8 @@ export default function App() {
         return newSet;
       });
       setMessage("⚠️ Invalid word!");
+      absentAudio.current?.play();
+      return;
     } else {
       setMessage("");
     }
@@ -135,7 +117,6 @@ export default function App() {
       setMessage("🎉 Congratulations, you are nads.");
       setGameOver(true);
       document.body.classList.add("celebrate");
-      saveScore();
     } else if (statuses.includes("present")) {
       presentAudio.current?.play();
     } else {
@@ -149,17 +130,7 @@ export default function App() {
     if (guess !== answer && guesses.length + 1 >= MAX_ATTEMPTS) {
       setGameOver(true);
       setMessage("Game Over! You are not nads.");
-      saveScore();
     }
-  }
-
-  function saveScore() {
-    const currentScores = loadLeaderboard();
-    const newScore = { name: playerName || "Anon", time, attempts: guesses.length + 1 };
-    currentScores.push(newScore);
-    currentScores.sort((a, b) => a.time - b.time || a.attempts - b.attempts);
-    saveLeaderboard(currentScores.slice(0, 10));
-    setLeaderboard(currentScores.slice(0, 10));
   }
 
   const keyboard = [
@@ -201,7 +172,6 @@ export default function App() {
     return `${m}:${s}`;
   }
 
-  // Güncellenmiş ipucu fonksiyonu
   function useHint() {
     if (hintUsed) return;
     hintAudio.current?.play();
@@ -220,7 +190,6 @@ export default function App() {
 
   return (
     <div className="game-container">
-      {/* Sosyal medya ikonları kaldırıldı */}
 
       <h1>NADLE</h1>
 
@@ -285,16 +254,36 @@ export default function App() {
 
           <p className="message">{message}</p>
 
-          {gameOver && (
-            <>
-              <div className="confetti" />
-              {/* Tweet paylaşımı kaldırıldı çünkü Twitter ikonları da kaldırıldı */}
-            </>
-          )}
-
-          <Leaderboard scores={leaderboard} />
+          {gameOver && <div className="confetti" />}
         </>
       )}
+
+      {/* Oyun kuralları kutusu (sol altta) */}
+      <div className="rules-box">
+        <h4>Game Rules</h4>
+        <p>
+          Purpose:<br/>
+          Test how well you know Monad and its ecosystem by guessing the daily word.<br/><br/>
+          How to play:<br/>
+          Enter your Twitter username to start. Guess the daily word by filling letters into the boxes. You have 6 lives; a wrong guess moves you to the next row.<br/><br/>
+          Hint:<br/>
+          Press the hint button to reveal one letter in the word. Usable once per game.<br/><br/>
+          Key points:<br/>
+          Correct letter & position: green<br/>
+          Correct letter, wrong position: yellow<br/>
+          Wrong letter: no color
+        </p>
+      </div>
+
+      {/* Güncellemeler kutusu (sağ altta) */}
+      <div className="update-box">
+        <h4>UPDATE v0.01</h4>
+        <ul>
+          <li>New words have been added.</li>
+          <li>Game rules have been added to the homepage.</li>
+          <li>A database system will be introduced for the leaderboard.</li>
+        </ul>
+      </div>
 
       {/* Sayfanın en alt ortasında kutu içinde X/DC: xurrydep */}
       <div className="footer-handle-box">X/DC: xurrydep</div>
