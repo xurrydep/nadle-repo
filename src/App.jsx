@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import "./App.css";
-import Leaderboard from "./Leaderboard";
+import Leaderboard from "./components/Leaderboard";
+import { supabase } from "./lib/supabaseClient";
 
 const WORDS = [
   "mon", "nadog", "nads", "quant", "what", "keone", "john", "karma", "chog",
@@ -13,6 +14,8 @@ const WORDS = [
   "realnads", "genesispass", "farmer", "goodmonad"
 ];
 
+const MAX_ATTEMPTS = 6;
+
 function getUserSeededWord() {
   const today = new Date().toISOString().slice(0, 10);
   const uid = localStorage.getItem("uid") || Math.floor(Math.random() * 100000).toString();
@@ -21,20 +24,11 @@ function getUserSeededWord() {
   return WORDS[hash].toLowerCase();
 }
 
-const MAX_ATTEMPTS = 6;
-const LEADERBOARD_STORAGE_KEY = "nadle_leaderboard";
-
-function loadLeaderboard() {
-  try {
-    const data = localStorage.getItem(LEADERBOARD_STORAGE_KEY);
-    return data ? JSON.parse(data) : [];
-  } catch {
-    return [];
-  }
-}
-
-function saveLeaderboard(scores) {
-  localStorage.setItem(LEADERBOARD_STORAGE_KEY, JSON.stringify(scores));
+// Zamanı mm:ss formatına çeviren yardımcı fonksiyon
+function formatTime(seconds) {
+  const m = String(Math.floor(seconds / 60)).padStart(2, "0");
+  const s = String(seconds % 60).padStart(2, "0");
+  return `${m}:${s}`;
 }
 
 export default function App() {
@@ -58,10 +52,10 @@ export default function App() {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      if (!gameOver) setTime((t) => t + 1);
+      if (!gameOver && nameSubmitted) setTime((t) => t + 1);
     }, 1000);
     return () => clearInterval(timer);
-  }, [gameOver]);
+  }, [gameOver, nameSubmitted]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -77,7 +71,7 @@ export default function App() {
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [currentGuess, gameOver, nameSubmitted]);
+  }, [currentGuess, gameOver, nameSubmitted, answer.length]);
 
   useEffect(() => {
     if (currentGuess.length === answer.length && !gameOver && nameSubmitted) {
@@ -86,10 +80,34 @@ export default function App() {
   }, [currentGuess, gameOver, nameSubmitted]);
 
   useEffect(() => {
-    setLeaderboard(loadLeaderboard());
+    fetchLeaderboard();
   }, []);
 
-  function submitGuess(guess) {
+  async function fetchLeaderboard() {
+    const { data, error } = await supabase
+      .from("leaderboard")
+      .select("*")
+      .order("time", { ascending: true })
+      .limit(10);
+
+    if (error) {
+      console.error("Error fetching leaderboard:", error);
+      setLeaderboard([]);
+    } else {
+      setLeaderboard(data);
+    }
+  }
+
+  async function saveScore(name, time, attempts) {
+    const { error } = await supabase.from("leaderboard").insert([{ name, time, attempts }]);
+    if (error) {
+      console.error("Error saving score:", error);
+      return false;
+    }
+    return true;
+  }
+
+  async function submitGuess(guess) {
     if (guess.length !== answer.length) return;
 
     const isValidWord = WORDS.includes(guess);
@@ -135,7 +153,11 @@ export default function App() {
       setMessage("🎉 Congratulations, you are nads.");
       setGameOver(true);
       document.body.classList.add("celebrate");
-      saveScore();
+
+      // Skoru kaydet
+      await saveScore(playerName || "Anon", time, guesses.length + 1);
+      await fetchLeaderboard();
+
     } else if (statuses.includes("present")) {
       presentAudio.current?.play();
     } else {
@@ -149,17 +171,11 @@ export default function App() {
     if (guess !== answer && guesses.length + 1 >= MAX_ATTEMPTS) {
       setGameOver(true);
       setMessage("Game Over! You are not nads.");
-      saveScore();
-    }
-  }
 
-  function saveScore() {
-    const currentScores = loadLeaderboard();
-    const newScore = { name: playerName || "Anon", time, attempts: guesses.length + 1 };
-    currentScores.push(newScore);
-    currentScores.sort((a, b) => a.time - b.time || a.attempts - b.attempts);
-    saveLeaderboard(currentScores.slice(0, 10));
-    setLeaderboard(currentScores.slice(0, 10));
+      // Skoru kaydet (game over)
+      await saveScore(playerName || "Anon", time, guesses.length + 1);
+      await fetchLeaderboard();
+    }
   }
 
   const keyboard = [
@@ -195,13 +211,6 @@ export default function App() {
     return "";
   }
 
-  function formatTime(seconds) {
-    const m = String(Math.floor(seconds / 60)).padStart(2, "0");
-    const s = String(seconds % 60).padStart(2, "0");
-    return `${m}:${s}`;
-  }
-
-  // Güncellenmiş ipucu fonksiyonu
   function useHint() {
     if (hintUsed) return;
     hintAudio.current?.play();
@@ -220,8 +229,6 @@ export default function App() {
 
   return (
     <div className="game-container">
-      {/* Sosyal medya ikonları kaldırıldı */}
-
       <h1>NADLE</h1>
 
       {!nameSubmitted ? (
@@ -285,18 +292,12 @@ export default function App() {
 
           <p className="message">{message}</p>
 
-          {gameOver && (
-            <>
-              <div className="confetti" />
-              {/* Tweet paylaşımı kaldırıldı çünkü Twitter ikonları da kaldırıldı */}
-            </>
-          )}
+          {gameOver && <div className="confetti" />}
 
-          <Leaderboard scores={leaderboard} />
+          <Leaderboard leaderboard={leaderboard} />
         </>
       )}
 
-      {/* Sayfanın en alt ortasında kutu içinde X/DC: xurrydep */}
       <div className="footer-handle-box">X/DC: xurrydep</div>
 
       <audio ref={correctAudio} src="/sounds/congrats.wav" preload="auto" />
