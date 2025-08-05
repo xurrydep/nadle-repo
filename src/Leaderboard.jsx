@@ -1,31 +1,27 @@
 import React from "react";
-import "./Leaderboard.css";
 
-export default function Leaderboard({ scores, show = true }) {
-  if (!show || !scores.length) {
-    return null;
-  }
-
+export default function Leaderboard({ leaderboard }) {
   return (
-    <div className="leaderboard-container">
-      <h2 className="leaderboard-title">Leaderboard</h2>
-      <ol className="leaderboard-list">
-        {scores.slice(0, 10).map(({ name, time, attempts }, idx) => (
-          <li key={idx}>
-            <span className="rank">{idx + 1}.</span>{" "}
-            <span className="name">{name}</span>{" "}
-            <span className="details">
-              — {formatTime(time)} — {attempts} tries
-            </span>
-          </li>
-        ))}
-      </ol>
+    <div className="leaderboard" aria-label="Leaderboard">
+      <h3>Leaderboard</h3>
+      {leaderboard && leaderboard.length > 0 ? (
+        <ul>
+          {leaderboard.map((entry, index) => (
+            <li key={index}>
+              <strong>{entry.name}</strong> — {formatTime(entry.time)} — {entry.attempts} tries
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>No scores yet</p>
+      )}
     </div>
   );
 }
 
+// Zamanı mm:ss formatına çeviren yardımcı fonksiyon
 function formatTime(seconds) {
-  const min = String(Math.floor(seconds / 60)).padStart(2, "0");
-  const sec = String(seconds % 60).padStart(2, "0");
-  return `${min}:${sec}`;
+  const m = String(Math.floor(seconds / 60)).padStart(2, "0");
+  const s = String(seconds % 60).padStart(2, "0");
+  return `${m}:${s}`;
 }
