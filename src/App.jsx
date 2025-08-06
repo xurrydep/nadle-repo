@@ -74,34 +74,40 @@ export default function App() {
     }
   }, [currentGuess, gameOver, nameSubmitted]);
 
-  // Leaderboard verisini çek
   useEffect(() => {
     async function fetchLeaderboard() {
       setLoadingLeaderboard(true);
       const { data, error } = await supabase
         .from("leaderboard")
-        .select("*")
-        .order("score", { ascending: false })
-        .limit(10);
+        .select("*");
+
       if (error) {
         console.error("Error fetching leaderboard:", error);
-      } else {
-        setLeaderboard(data);
+      } else if (data) {
+        data.sort((a, b) => {
+          if (a.duration !== b.duration) return a.duration - b.duration;
+          return a.attempt - b.attempt;
+        });
+        setLeaderboard(data.slice(0, 10));
       }
       setLoadingLeaderboard(false);
     }
     fetchLeaderboard();
   }, [gameOver]);
 
-  // Skor kaydet ve listeyi yenile
-  async function handleSaveScore(username, score) {
-    await saveScore(username, score);
+  async function handleSaveScore(username, score, attempt, duration) {
+    await saveScore(username, score, attempt, duration);
     const { data, error } = await supabase
       .from("leaderboard")
-      .select("*")
-      .order("score", { ascending: false })
-      .limit(10);
-    if (!error) setLeaderboard(data);
+      .select("*");
+
+    if (!error && data) {
+      data.sort((a, b) => {
+        if (a.duration !== b.duration) return a.duration - b.duration;
+        return a.attempt - b.attempt;
+      });
+      setLeaderboard(data.slice(0, 10));
+    }
   }
 
   async function submitGuess(guess) {
@@ -151,7 +157,10 @@ export default function App() {
       setGameOver(true);
       document.body.classList.add("celebrate");
 
-      await handleSaveScore(playerName, 1);
+      const attemptNumber = guesses.length + 1;
+      const durationSeconds = time;
+
+      await handleSaveScore(playerName, 1, attemptNumber, durationSeconds);
     } else if (statuses.includes("present")) {
       presentAudio.current?.play();
     } else {
@@ -227,6 +236,23 @@ export default function App() {
     <div className="game-container">
       <h1>NADLE</h1>
 
+      {/* Oyun Kuralları kutusu - sol üst köşe */}
+      <div className="game-rules-box">
+        <h3>Game Rules</h3>
+        <p><strong>Purpose:</strong></p>
+        <p>Test how well you know Monad and its ecosystem by guessing the daily word.</p>
+        <p><strong>How to play:</strong></p>
+        <p>Enter your Twitter username to start. Guess the daily word by filling letters into the boxes. You have 6 lives; a wrong guess moves you to the next row</p>
+        <p><strong>Hint:</strong></p>
+        <p>Press the hint button to reveal one letter in the word. Usable once per game.</p>
+        <p><strong>Key points:</strong></p>
+        <ul>
+          <li>Correct letter & position: green</li>
+          <li>Correct letter, wrong position: yellow</li>
+          <li>Wrong letter, no color</li>
+        </ul>
+      </div>
+
       {!nameSubmitted ? (
         <div className="name-input-container">
           <input
@@ -290,23 +316,40 @@ export default function App() {
         </>
       )}
 
+      {/* Update kutusu - sol alt köşe */}
+      <div className="update-box">
+        <h3>UPDATE v0.01</h3>
+        <ul>
+          <li>New words have been added.</li>
+          <li>Game rules have been added to the homepage.</li>
+          <li>Database-based leaderboard has been added. Now everyone can see each other's rankings.</li>
+        </ul>
+      </div>
+
       <div className="footer-handle-box">X/DC: xurrydep</div>
 
       {/* Leaderboard sağ üst köşe */}
       <div className="leaderboard-container">
         <h3>Leaderboard</h3>
+
+        <div className="leaderboard-header">
+          <div className="leaderboard-player-header">Player</div>
+          <div className="leaderboard-attempts-header">Attempts</div>
+          <div className="leaderboard-time-header">Time</div>
+        </div>
+
         {loadingLeaderboard ? (
           <p>Loading...</p>
         ) : leaderboard.length === 0 ? (
           <p>No scores yet</p>
         ) : (
-          <ol>
-            {leaderboard.map(({ id, username, score }) => (
-              <li key={id}>
-                {username} — {score}
-              </li>
-            ))}
-          </ol>
+          leaderboard.map(({ id, username, attempt, duration }) => (
+            <div key={id} className="leaderboard-entry">
+              <div className="leaderboard-name">{username}</div>
+              <div className="leaderboard-attempts">{attempt}</div>
+              <div className="leaderboard-time">{formatTime(duration)}</div>
+            </div>
+          ))
         )}
       </div>
 
