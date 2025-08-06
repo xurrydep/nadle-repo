@@ -1,5 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import "./App.css";
+import { saveScore } from "./supabaseService";
+import { supabase } from "./supabaseClient";
 
 const WORDS = [
   "mon", "nadog", "nads", "quant", "what", "keone", "john", "karma", "chog",
@@ -35,6 +37,9 @@ export default function App() {
   const [nameSubmitted, setNameSubmitted] = useState(false);
   const [hintUsed, setHintUsed] = useState(false);
 
+  const [leaderboard, setLeaderboard] = useState([]);
+  const [loadingLeaderboard, setLoadingLeaderboard] = useState(true);
+
   const correctAudio = useRef(null);
   const presentAudio = useRef(null);
   const absentAudio = useRef(null);
@@ -69,7 +74,37 @@ export default function App() {
     }
   }, [currentGuess, gameOver, nameSubmitted]);
 
-  function submitGuess(guess) {
+  // Leaderboard verisini çek
+  useEffect(() => {
+    async function fetchLeaderboard() {
+      setLoadingLeaderboard(true);
+      const { data, error } = await supabase
+        .from("leaderboard")
+        .select("*")
+        .order("score", { ascending: false })
+        .limit(10);
+      if (error) {
+        console.error("Error fetching leaderboard:", error);
+      } else {
+        setLeaderboard(data);
+      }
+      setLoadingLeaderboard(false);
+    }
+    fetchLeaderboard();
+  }, [gameOver]);
+
+  // Skor kaydet ve listeyi yenile
+  async function handleSaveScore(username, score) {
+    await saveScore(username, score);
+    const { data, error } = await supabase
+      .from("leaderboard")
+      .select("*")
+      .order("score", { ascending: false })
+      .limit(10);
+    if (!error) setLeaderboard(data);
+  }
+
+  async function submitGuess(guess) {
     if (guess.length !== answer.length) return;
 
     const isValidWord = WORDS.includes(guess);
@@ -115,6 +150,8 @@ export default function App() {
       setMessage("🎉 Congratulations, you are nads.");
       setGameOver(true);
       document.body.classList.add("celebrate");
+
+      await handleSaveScore(playerName, 1);
     } else if (statuses.includes("present")) {
       presentAudio.current?.play();
     } else {
@@ -254,6 +291,24 @@ export default function App() {
       )}
 
       <div className="footer-handle-box">X/DC: xurrydep</div>
+
+      {/* Leaderboard sağ üst köşe */}
+      <div className="leaderboard-container">
+        <h3>Leaderboard</h3>
+        {loadingLeaderboard ? (
+          <p>Loading...</p>
+        ) : leaderboard.length === 0 ? (
+          <p>No scores yet</p>
+        ) : (
+          <ol>
+            {leaderboard.map(({ id, username, score }) => (
+              <li key={id}>
+                {username} — {score}
+              </li>
+            ))}
+          </ol>
+        )}
+      </div>
 
       <audio ref={correctAudio} src="/sounds/congrats.wav" preload="auto" />
       <audio ref={presentAudio} src="/sounds/mf.wav" preload="auto" />
