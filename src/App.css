@@ -35,8 +35,8 @@ body {
   user-select: none;
   box-shadow: 0 0 10px #6a0dad;
   z-index: 9999;
-  overflow-y: visible;
-  max-height: none;
+  overflow-y: visible; /* scrollbar kaldırıldı */
+  max-height: none; /* yükseklik sınırı kaldırıldı */
 }
 
 .game-rules-box h3 {
@@ -330,14 +330,16 @@ body {
   user-select: none;
 }
 
+/* Attempts başlığı ortalanmış */
 .leaderboard-header > div:nth-child(2) {
   text-align: center;
   font-weight: bold;
   color: #ccc;
 }
 
+/* Time başlığını gizle */
 .leaderboard-header > div:nth-child(3) {
-  text-align: right;
+  display: none;
 }
 
 /* Her bir skor satırı */
@@ -356,7 +358,7 @@ body {
   border-bottom: none;
 }
 
-/* Nick sadece gösterilir */
+/* Nick sadece gösterilir, flex kaldırıldı */
 .leaderboard-name {
   overflow: hidden;
   white-space: nowrap;
@@ -379,7 +381,7 @@ body {
 }
 
 /* Time hizalaması */
-.leaderboard-time {
+.leaderboard-stats {
   color: #ffcc00;
   font-size: 14px;
   user-select: none;
@@ -411,12 +413,17 @@ body {
     padding: 12px 0;
   }
 
+  /* Leaderboard'u sayfa akışına al, genişliği %100 yap */
   .leaderboard-container {
-    width: 280px;
-    font-size: 13px;
-    padding: 8px 12px;
-    top: 5px;
-    right: 5px;
+    position: static !important;  /* fixed kaldır */
+    width: 100% !important;
+    max-width: 340px;
+    margin: 20px auto 10px auto;
+    font-size: 14px;
+    padding: 12px 16px;
+    box-shadow: none;
+    border-radius: 8px;
+    background-color: rgba(26, 0, 51, 0.95);
   }
 
   .leaderboard-header,
@@ -424,14 +431,29 @@ body {
     grid-template-columns: 3fr 1fr 1fr;
   }
 
+  /* Oyun kuralları kutusu sayfa akışına al, leaderboard'un altına gelir */
   .game-rules-box {
-    width: 220px;
-    font-size: 12px;
+    position: static !important;
+    width: 100% !important;
+    max-width: 340px;
+    margin: 0 auto 10px auto;
+    font-size: 13px;
+    border-radius: 8px;
+    box-shadow: none;
+    padding: 16px 20px;
   }
 
+  /* Update kutusunu da sayfa akışına al, leaderboard ve kurallar kutusunun altına gelir */
   .update-box {
-    width: 220px;
-    font-size: 12px;
-    max-height: 25vh;
+    position: static !important;
+    width: 100% !important;
+    max-width: 340px;
+    margin: 0 auto 20px auto;
+    font-size: 13px;
+    border-radius: 8px;
+    box-shadow: none;
+    padding: 16px 20px;
+    max-height: none;
+    overflow-y: visible;
   }
 }
