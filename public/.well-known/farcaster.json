@@ -1,0 +1,34 @@
+{
+  "accountAssociation": {
+    "token": "EXAMPLE_TOKEN",
+    "signature": "EXAMPLE_SIGNATURE"
+  },
+  "miniapp": {
+    "version": "1",
+    "name": "Nadle",
+    "subtitle": "Daily word game for the Monad community",
+    "iconUrl": "https://nadle.vercel.app/icon.png",
+    "splashImageUrl": "https://nadle.vercel.app/splash.png",
+    "homeUrl": "https://nadle.vercel.app/",
+    "description": "Test your knowledge of Monad with a fun daily word challenge. Six guesses, one answer!",
+    "theme": {
+      "backgroundColor": "#1f0128"
+    },
+    "tags": [
+      "wordgame",
+      "dailychallenge",
+      "Monad",
+      "puzzle",
+      "community",
+      "gaming",
+      "fun",
+      "crypto",
+      "blockchain"
+    ],
+    "marketingTagline": "Monad’s daily word challenge",
+    "buttonTitle": "Play Nadle",
+    "socialShareTitle": "Play Nadle – Monad Word Game",
+    "socialShareDescription": "Play Nadle daily and test your knowledge of Monad with fun word puzzles. Six guesses, one answer—can you solve it?",
+    "socialShareImageUrl": "https://nadle.vercel.app/og.png"
+  }
+}
